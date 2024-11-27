@@ -1,0 +1,53 @@
+_format_version: "2.1"
+_transform: true
+
+services:
+  - name: auth-service
+    url: http://auth:9999
+    routes:
+      - name: auth-route
+        paths:
+          - /auth/v1
+        strip_path: true
+    plugins:
+      - name: cors
+
+  - name: rest-service
+    url: http://rest:3000
+    routes:
+      - name: rest-route
+        paths:
+          - /rest/v1
+        strip_path: true
+    plugins:
+      - name: cors
+
+plugins:
+  - name: cors
+    config:
+      origins:
+        - http://localhost:3000
+        - http://localhost:8000
+      methods:
+        - GET
+        - POST
+        - PUT
+        - PATCH
+        - DELETE
+        - OPTIONS
+      headers:
+        - Accept
+        - Accept-Version
+        - Content-Length
+        - Content-MD5
+        - Content-Type
+        - Date
+        - X-Auth-Token
+        - Authorization
+        - apikey
+      exposed_headers:
+        - Content-Length
+        - Content-MD5
+      credentials: true
+      max_age: 3600
+      preflight_continue: false

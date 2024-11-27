@@ -1,0 +1,40 @@
+{
+  "version": "3.8",
+  "services": {
+    "db": {
+      "image": "supabase/postgres:15.1.0.117",
+      "ports": ["5432:5432"],
+      "environment": {
+        "POSTGRES_USER": "postgres",
+        "POSTGRES_PASSWORD": "postgres",
+        "POSTGRES_DB": "einco_time"
+      },
+      "volumes": [
+        "./volumes/db/init:/docker-entrypoint-initdb.d",
+        "db_data:/var/lib/postgresql/data"
+      ]
+    },
+    "api": {
+      "image": "supabase/gotrue:v2.132.3",
+      "depends_on": ["db"],
+      "environment": {
+        "GOTRUE_JWT_SECRET": "your-super-secret-jwt-token-with-at-least-32-characters",
+        "GOTRUE_JWT_EXP": "3600",
+        "GOTRUE_DB_DRIVER": "postgres",
+        "GOTRUE_API_HOST": "0.0.0.0",
+        "GOTRUE_DB_HOST": "db",
+        "DATABASE_URL": "postgres://postgres:postgres@db:5432/einco_time?sslmode=disable",
+        "GOTRUE_SITE_URL": "http://localhost:3000",
+        "GOTRUE_SMTP_HOST": "smtp.example.com",
+        "GOTRUE_SMTP_PORT": "587",
+        "GOTRUE_SMTP_USER": "your-smtp-user",
+        "GOTRUE_SMTP_PASS": "your-smtp-password",
+        "GOTRUE_SMTP_ADMIN_EMAIL": "admin@example.com"
+      },
+      "ports": ["9999:9999"]
+    }
+  },
+  "volumes": {
+    "db_data": {}
+  }
+}
